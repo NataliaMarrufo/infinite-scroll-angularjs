@@ -1,0 +1,24 @@
+angular.module('infinite-scroll', []).directive('InfiniteScroll',['$compile', function($compile) {
+	return{
+		link: function(scope,elm, attr) {
+			var loading = false;
+			var checkExist = setInterval(function() {
+				var container = elm[0];
+				if (container.clientHeight) {
+					var pastScroll = container.scrollTop + container.offsetHeight;
+					elm.bind('scroll', function() {	
+						var currentScroll = container.scrollTop + container.offsetHeight;
+						
+						if (currentScroll >= container.scrollHeight && pastScroll <= currentScroll && !loading) {
+							pastScroll = currentScroll;
+							loading = true;
+							scope.$apply(attr.ganttInfiniteScroll);
+							loading = false;
+						}
+					})
+					clearInterval(checkExist);
+				}
+			}, 100);
+		}
+	}
+}]);
